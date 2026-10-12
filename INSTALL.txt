@@ -1,0 +1,21 @@
+Clues me in — installation
+
+Upload these five files together to the same published folder:
+index.html
+manifest.webmanifest
+service-worker.js
+icon-192.png
+icon-512.png
+
+Replace the existing index.html. Keep your existing CNAME if you use a custom domain.
+Do not change the website domain/path if you want existing local cases to remain available.
+Serve over HTTPS (GitHub Pages supports this). Open the published site once online.
+Android/Chrome/Edge: use Install Clues me in in the sidebar or the browser installation menu.
+iPhone/iPad: open in Safari, Share, Add to Home Screen.
+
+After the first successful cache installation, the interface and locally saved cases can
+be opened offline. Gemini generation and chats require an internet connection.
+For subsequent releases, increment CACHE in service-worker.js, upload the files, then
+close existing app windows and reopen so a waiting worker can activate safely.
+
+icon.svg is the editable icon source and does not need to be uploaded.

@@ -1,0 +1,13 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');const s=fs.readFileSync(__dirname+'/index.html','utf8');
+const ctx={ClueMeInI18n:{getLanguage:()=> 'en'},hintPenalty:c=>Math.min(100,(c.hintHistory||[]).reduce((n,h)=>n+h.cost,0)),escapeHtml:s=>String(s).replaceAll('<','&lt;')};vm.createContext(ctx);vm.runInContext(s.slice(s.indexOf('    const SCORE_CRITERIA'),s.indexOf('    const HINT_LEVELS')),ctx);
+const data={verdictText:'verdict',scores:{evidence:{points:20,reason:'e'},conclusion:{points:40,reason:'c'},questions:{points:20,reason:'q'},procedure:{points:20,reason:'p'}},strengths:['<b>test</b>'],mistakes:[],improvements:[]};
+const c={evidenceList:[{id:'1'},{id:'1'},{id:'red'}],hintHistory:[{cost:2},{cost:5},{cost:10}]},secret={culpritName:'Culprit',investigationPlan:{clues:[{id:'1'},{id:'2'}]}};
+const r=ctx.buildFinalEvaluation(data,c,secret,'Culprit');assert.equal(r.scores.evidence.points,10);assert.equal(r.baseScore,90);assert.equal(r.finalScore,73);assert.equal(r.hintDeduction,17);
+const wrong=ctx.buildFinalEvaluation(data,c,secret,'Wrong');assert.equal(wrong.scores.conclusion.points,15);
+c.hintHistory=[{cost:1000}];assert.equal(ctx.buildFinalEvaluation(data,c,secret,'Culprit').finalScore,0);
+assert.throws(()=>ctx.buildFinalEvaluation({...data,scores:{...data.scores,questions:{points:21,reason:'q'}}},c,secret,'Culprit'));
+assert.throws(()=>ctx.buildFinalEvaluation({...data,verdictText:''},c,secret,'Culprit'));
+assert.equal(ctx.renderFinalEvaluation({isSolved:false}),'');assert(ctx.renderFinalEvaluation({isSolved:true}).includes('older case'));
+assert(ctx.renderFinalEvaluation({isSolved:true,indictmentResult:{evaluation:r}}).includes('&lt;b>'));
+assert(s.includes('const evaluation = buildFinalEvaluation(verdictData, c, secret, accused);'));assert(s.includes('خطة الأدلة الأساسية:'));
+console.log('PASS: clue coverage, duplicate/red herring exclusion, wrong accusation, hint deduction once, score bounds, validation, old cases, safe rendering');

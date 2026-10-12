@@ -1,0 +1,146 @@
+/* Stage 1: warm paper surfaces inspired by the supplied case archive. */
+:root {
+  color-scheme: light;
+  --paper: #faf5e9;
+  --paper-deep: #efe3cb;
+  --ink: #3e3328;
+  --muted: #72634f;
+  --line: #cdbd9f;
+  --accent: #79545c;
+}
+html, body {
+  background: #e4d7bf !important;
+  color: var(--ink) !important;
+}
+body {
+  background-image: linear-gradient(rgba(239,229,208,.18), rgba(239,229,208,.36)), url('./office-desktop.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+#app, .case-workspace.case-workspace {
+  background: transparent !important;
+  padding: 20px;
+  gap: 14px;
+}
+#app > main, .case-workspace > div.flex-1 {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(70,49,26,.16);
+}
+aside {
+  background: rgba(250,245,233,.97) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(70,49,26,.15);
+  overflow: hidden;
+}
+[class*="bg-noir-950"] { background-color: rgba(250,245,233,.95) !important; }
+[class*="bg-noir-900"] { background-color: rgba(245,237,221,.96) !important; }
+[class*="bg-noir-850"] { background-color: #f9f2e4 !important; }
+[class*="bg-noir-800"], [class*="bg-noir-750"] { background-color: #e9dcc3 !important; }
+[class*="border-noir-"], [class*="border-red-"], [class*="border-sky-"] { border-color: var(--line) !important; }
+[class*="text-slate-1"], [class*="text-slate-2"], [class*="text-slate-3"], .text-white { color: var(--ink) !important; }
+[class*="text-slate-4"], [class*="text-slate-5"], [class*="text-slate-6"] { color: var(--muted) !important; }
+[class*="text-red-"], [class*="text-sky-"], [class*="text-amber-"] { color: #76505a !important; }
+[class*="text-emerald-"] { color: #3e6345 !important; }
+[class*="bg-red-950"], [class*="bg-red-600/"], [class*="bg-sky-600/"], [class*="bg-amber-600/"] { background-color: #eadccf !important; }
+[class*="bg-emerald-950"] { background-color: #e6ecdf !important; }
+.bg-red-600, .bg-sky-600, .bg-emerald-600 {
+  background-color: var(--accent) !important;
+  color: #fffaf0 !important;
+  border-color: var(--accent) !important;
+}
+button:hover:not(:disabled), [role="button"]:hover { filter: brightness(.96); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px;
+}
+input, textarea, select {
+  color: var(--ink) !important;
+  background-color: #fffaf0 !important;
+  border-color: var(--line) !important;
+  caret-color: var(--accent);
+}
+input::placeholder, textarea::placeholder { color: #7b6b57 !important; opacity: 1; }
+select option { color: var(--ink); background: var(--paper); }
+h1, h2, h3 { color: var(--ink); }
+[class*="shadow-"] { --tw-shadow-color: rgba(70,49,26,.14); }
+::-webkit-scrollbar-track { background: #f3ead9; }
+::-webkit-scrollbar-thumb { background: #c1ab89; }
+::-webkit-scrollbar-thumb:hover { background: #947758; }
+::selection { background: #d9c5a4; color: #30271f; }
+@media (max-width: 767px) {
+  #app, .case-workspace.case-workspace { padding: 8px; gap: 8px; }
+}
+
+/* Stage 2: one panel instance per tool, adaptive layout and right drawer. */
+#app, .case-workspace.case-workspace {
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+.case-workspace *, #app * { box-sizing: border-box; }
+.case-sidebar {
+  position: fixed !important;
+  inset: 12px 12px 12px auto;
+  z-index: 50;
+  width: min(320px, calc(100vw - 24px)) !important;
+  height: auto !important;
+  display: flex;
+}
+.case-sidebar[hidden] { display: none !important; }
+.sidebar-backdrop { position: fixed; inset: 0; z-index: 40; }
+.workspace-header { min-height: 56px; gap: 8px; }
+.workspace-header > div { min-width: 0; }
+.workspace-panels { display: flex; height: 100%; min-height: 0; }
+.workspace-panel { display: none; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: hidden; }
+.workspace-panel.is-active { display: flex; }
+.workspace-panel > div { width: 100% !important; min-width: 0; min-height: 0; }
+.workspace-tabs { display: flex !important; padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+.workspace-tabs button { min-height: 44px; }
+#investigation-messages, #assistant-messages { overflow-wrap: anywhere; overscroll-behavior: contain; }
+.workspace-panel form > input { min-width: 0; }
+.workspace-modal > div {
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+}
+@media (min-width: 1440px) {
+  .workspace-panels { display: grid; grid-template-columns: 280px minmax(0, 1fr) 300px; }
+  .workspace-panel { display: flex; }
+  .workspace-tabs { display: none !important; }
+}
+@media (max-width: 767px) {
+  .workspace-panel input, .workspace-panel textarea, .workspace-modal input, .workspace-modal textarea, .workspace-modal select { font-size: 16px !important; }
+  .workspace-header button { min-width: 44px; min-height: 44px; }
+  .workspace-header { flex-wrap: wrap; }
+}
+@media (max-height: 500px) {
+  #app, .case-workspace.case-workspace { padding: 4px; }
+  .workspace-header { min-height: 44px; }
+  .workspace-tabs button { min-height: 36px; }
+}
+
+#app > main, .case-workspace > div.flex-1 { min-height: 0; }
+
+/* Language direction affects text, while the requested drawer stays on the right. */
+html[dir="ltr"] .text-right { text-align: left !important; }
+html[dir="ltr"] body { font-family: 'Tajawal', Arial, sans-serif; }
+html[dir="ltr"] .case-sidebar { right: 12px; left: auto; }
+#language-toggle { white-space: nowrap; }
+
+/* Long advisor names and mode labels remain readable within the panel. */
+[data-workspace-panel="assistant"] h3 { max-width: 155px; overflow-wrap: anywhere; }
+[data-workspace-panel="assistant"] > div > div:first-child { height: auto; min-height: 56px; flex-shrink: 0; gap: 6px; padding-top: 8px; padding-bottom: 8px; }
+
+/* Phones use the portrait attachment; desktops and tablets use the landscape one. */
+html[data-background-device="phone"] body {
+  background-image: linear-gradient(rgba(239,229,208,.18), rgba(239,229,208,.36)), url('./office-mobile.jpg') !important;
+}
+html[data-background-device="desktop-tablet"] body {
+  background-image: linear-gradient(rgba(239,229,208,.18), rgba(239,229,208,.36)), url('./office-desktop.jpg') !important;
+}
